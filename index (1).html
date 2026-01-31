@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרויקט SOC Analyst Lab - Sean Damari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a192f;
+            --secondary: #112240;
+            --accent: #64ffda;
+            --text: #8892b0;
+            --text-bright: #ccd6f6;
+            --text-brightest: #e6f1ff;
+            --highlight: #233554;
+            --red: #ff6b6b;
+            --orange: #ffa94d;
+            --green: #51cf66;
+            --code-bg: #1e2738;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            opacity: 0.03;
+            border-radius: 50%;
+            top: -200px;
+            left: -200px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 100px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--text-brightest);
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            width: 100%;
+        }
+
+        .cta-button:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--text-brightest);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Attack Phases */
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .phase-card {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 2.5rem;
+            border-right: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .phase-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 10px 40px rgba(100, 255, 218, 0.1);
+        }
+
+        .phase-number {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .phase-title {
+            font-size: 1.8rem;
+            color: var(--text-brightest);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .phase-tech {
+            display: inline-block;
+            background: var(--highlight);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .phase-description {
+            color: var(--text);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .phase-details {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            border-right: 3px solid var(--accent);
+        }
+
+        .phase-details li {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            padding-right: 1rem;
+        }
+
+        .phase-details strong {
+            color: var(--text-brightest);
+        }
+
+        /* Technical Details */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tech-card {
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 3px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-title {
+            font-size: 1.3rem;
+            color: var(--text-brightest);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tech-description {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border-right: 4px solid var(--accent);
+            margin: 1.5rem 0;
+        }
+
+        .code-block code {
+            color: var(--accent);
+            direction: ltr;
+            display: block;
+            text-align: left;
+        }
+
+        /* Glossary */
+        .glossary {
+            background: var(--secondary);
+            padding: 4rem 0;
+        }
+
+        .glossary-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .glossary-item {
+            background: var(--highlight);
+            padding: 2rem;
+            border-radius: 8px;
+            border-right: 3px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            background: var(--secondary);
+            transform: translateX(-5px);
+        }
+
+        .glossary-term {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glossary-category {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--text);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .glossary-definition {
+            color: var(--text);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .glossary-definition strong {
+            color: var(--text-brightest);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            right: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid var(--highlight);
+        }
+
+        .timeline-time {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            color: var(--text-brightest);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: var(--text);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--secondary);
+            padding: 2.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            color: var(--accent);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        /* Highlight box */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--highlight) 0%, var(--secondary) 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            border-right: 4px solid var(--accent);
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box p {
+            color: var(--text-bright);
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--highlight);
+        }
+
+        footer p {
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        footer .name {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .phase-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                right: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+        }
+
+        /* Tooltip for glossary terms in text */
+        .tooltip {
+            position: relative;
+            color: var(--accent);
+            text-decoration: underline dotted;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: var(--code-bg);
+            color: var(--text-bright);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            z-index: 1000;
+            border: 1px solid var(--accent);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: var(--red);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 0.3rem;
+        }
+
+        .badge.critical {
+            background: var(--red);
+        }
+
+        .badge.high {
+            background: var(--orange);
+        }
+
+        .badge.medium {
+            background: #ffd43b;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>תקיפה דו-שלבית: התמדה וגניבת אישורים</h1>
+                <p class="subtitle">פרויקט SOC Analyst Lab - זיהוי ותיעוד תקיפה מתקדמת</p>
+                <p class="description">
+                    סימולציה מלאה של תקיפת סייבר בסביבת מעבדה, כולל ביצוע התקיפה, זיהוי ב-Splunk SIEM, 
+                    וניתוח פורנזי מקצועי עם מיפוי MITRE ATT&CK
+                </p>
+                <a href="#summary" class="cta-button">התחל לקרוא ↓</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Summary -->
+    <section id="summary" style="background: var(--secondary);">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">מה היה הפרויקט?</h2>
+                <p class="section-subtitle">סימולציה של תקיפה מתקדמת בסביבת מעבדה מבוקרת</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 מטרת הפרויקט</h3>
+                <p>
+                    לבצע תקיפה דו-שלבית על מחשב Windows, לזהות אותה באמצעות כלי <span class="tooltip" data-tooltip="Security Information and Event Management">SIEM</span> 
+                    (Splunk), ולתעד את כל התהליך בדוח פורנזי מקצועי.
+                    התקיפה מדמה טכניקות אמיתיות שמשתמשים בהן האקרים בעולם האמיתי.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">שלבי תקיפה</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">&lt;5</div>
+                    <div class="stat-label">דקות לזיהוי</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">אירועי Event 4688</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">טכניקות MITRE ATT&CK</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attack Phases -->
+    <section id="phases">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">שלבי התקיפה</h2>
+                <p class="section-subtitle">התקיפה בוצעה בשני שלבים עוקבים</p>
+            </div>
+
+            <div class="phase-grid">
+                <!-- Phase 1 -->
+                <div class="phase-card">
+                    <div class="phase-number">1</div>
+                    <h3 class="phase-title">התמדה (Persistence)</h3>
+                    <span class="phase-tech">T1547.001 - Registry Run Keys</span>
+                    <span class="badge critical">CRITICAL</span>
+                    
+                    <p class="phase-description">
+                        התוקף יצר "דלת אחורית" במחשב על ידי יצירת מפתח רישום בשם <strong>CriticalPDFUpdate</strong> 
+                        ש runs אוטומטית בכל כניסה של המשתמש. זה מבטיח לתוקף גישה עתידית גם אם המחשב יכבה.
+                    </p>
+
+                    <div class="code-block">
+                        <code>powershell.exe -NoProfile -Command "Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'CriticalPDFUpdate' -Value 'C:\Windows\System32\calc.exe'"</code>
+                    </div>
+
+                    <ul class="phase-details">
+                        <li><strong>מיקום:</strong> HKCU\Software\Microsoft\Windows\CurrentVersion\Run</li>
+                        <li><strong>ערך:</strong> CriticalPDFUpdate → calc.exe</li>
+                        <li><strong>השפעה:</strong> הרצה אוטומטית בכל כניסה</li>
+                        <li><strong>זיהוי:</strong> Event ID 4688 + CommandLine="Set-ItemProperty"</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="phase-card">
+                    <div class="phase-number">2</div>
+                    <h3 class="phase-title">גניבת אישורים (Credential Theft)</h3>
+                    <span class="phase-tech">T1003.001 - LSASS Memory</span>
+                    <span class="badge critical">CRITICAL</span>
+                    
+                    <p class="phase-description">
+                        התוקף השתמש בכלי מובנה של Windows (<span class="tooltip" data-tooltip="Living off the Land">LotL</span>) 
+                        כדי לעשות dump של זיכרון התהליך <span class="tooltip" data-tooltip="Local Security Authority Subsystem Service">LSASS</span> 
+                        שמכיל את הסיסמאות של כל המשתמשים המחוברים.
+                    </p>
+
+                    <div class="code-block">
+                        <code>rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump 13980 C:\Windows\Temp\lsass.dmp full</code>
+                    </div>
+
+                    <ul class="phase-details">
+                        <li><strong>כלי:</strong> rundll32.exe + comsvcs.dll</li>
+                        <li><strong>יעד:</strong> PID 13980 (notepad.exe - סימולציה)</li>
+                        <li><strong>פלט:</strong> lsass.dmp (>40 MB)</li>
+                        <li><strong>זיהוי:</strong> Event ID 4688 + "MiniDump"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section style="background: var(--secondary);">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">ציר הזמן</h2>
+                <p class="section-subtitle">רצף האירועים שזוהו במערכת</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">12:55:51.159</div>
+                        <div class="timeline-title">explorer.exe → cmd.exe</div>
+                        <p class="timeline-desc">המשתמש פתח CMD כמנהל (Run as administrator)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">12:55:51.184</div>
+                        <div class="timeline-title">cmd.exe → conhost.exe</div>
+                        <p class="timeline-desc">יצירת Console Host Process (תהליך רגיל)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">12:55:56.170</div>
+                        <div class="timeline-title">cmd.exe → rundll32.exe #1 <span class="badge critical">CRITICAL</span></div>
+                        <p class="timeline-desc">הרצת MiniDump ראשונה - ניסיון dump של זיכרון</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">12:55:59.340</div>
+                        <div class="timeline-title">cmd.exe → rundll32.exe #2 <span class="badge critical">CRITICAL</span></div>
+                        <p class="timeline-desc">הרצת MiniDump שנייה (בדיקה חוזרת)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>⏱️ מסקנה מציר הזמן</h3>
+                <p>
+                    התקיפה התרחשה תוך <strong>8 שניות</strong>. זה טיפוסי לתקיפות מתוכננות שבהן התוקף 
+                    כבר יודע בדיוק מה לעשות. בעולם האמיתי, בין השלבים יכולים לעבור ימים או שבועות.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Details -->
+    <section id="technical">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">פרטים טכניים</h2>
+                <p class="section-subtitle">כלים וטכנולוגיות שהשתמשנו בהם</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">💻</div>
+                    <h3 class="tech-title">Windows 10/11</h3>
+                    <p class="tech-description">
+                        מערכת ההפעלה שעליה בוצעה התקיפה. הגדרנו <strong>Audit Process Creation</strong> 
+                        עם <strong>Include command line</strong> כדי לתעד את כל הפקודות.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🔍</div>
+                    <h3 class="tech-title">Splunk SIEM</h3>
+                    <p class="tech-description">
+                        מערכת ניהול אירועי אבטחה. השתמשנו ב-<strong>Splunk Universal Forwarder</strong> 
+                        לאיסוף לוגים ו-<strong>Splunk Enterprise</strong> לניתוח.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">📝</div>
+                    <h3 class="tech-title">Event ID 4688</h3>
+                    <p class="tech-description">
+                        אירוע Windows המתעד יצירת תהליכים חדשים. כולל את שורת הפקודה המלאה (CommandLine) 
+                        אם הוגדר נכון ב-Group Policy.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🔧</div>
+                    <h3 class="tech-title">REGEX (rex)</h3>
+                    <p class="tech-description">
+                        השתמשנו בפקודת <strong>rex</strong> ב-Splunk לחילוץ שדות מהלוג הגולמי (_raw) 
+                        כי Event 4688 לא תמיד מגיע עם שדות מופרדים.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🎯</div>
+                    <h3 class="tech-title">MITRE ATT&CK</h3>
+                    <p class="tech-description">
+                        מסגרת לסיווג טכניקות תקיפה. זיהינו <strong>T1547.001</strong> (Registry Run Keys) 
+                        ו-<strong>T1003.001</strong> (LSASS Memory).
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🛡️</div>
+                    <h3 class="tech-title">Windows Defender</h3>
+                    <p class="tech-description">
+                        כובה במהלך האימון כדי לאפשר ביצוע התקיפה. במציאות, <strong>EDR</strong> 
+                        (Endpoint Detection and Response) היה חוסם את התקיפה.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Glossary -->
+    <section class="glossary" id="glossary">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2 class="section-title">מילון מושגים</h2>
+                <p class="section-subtitle">הסבר פשוט לכל המושגים הטכניים</p>
+            </div>
+
+            <div class="glossary-grid">
+                <div class="glossary-item">
+                    <h3 class="glossary-term">LSASS</h3>
+                    <span class="glossary-category">תהליך Windows</span>
+                    <p class="glossary-definition">
+                        <strong>Local Security Authority Subsystem Service</strong> - תהליך של Windows שאחראי על אבטחה. 
+                        הוא שומר בזיכרון את הסיסמאות של כל המשתמשים המחוברים כרגע. 
+                        זה כמו <strong>כספת דיגיטלית</strong> שבה Windows שומר את כל המפתחות. 
+                        כשהתוקף עושה dump של LSASS, הוא מצלם את תוכן הכספת.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">LotL / Living off the Land</h3>
+                    <span class="glossary-category">טכניקת תקיפה</span>
+                    <p class="glossary-definition">
+                        טכניקה שבה התוקף משתמש <strong>בכלים לגיטימיים</strong> שכבר קיימים במערכת (כמו rundll32.exe) 
+                        במקום להכניס תוכנה זדונית מבחוץ. זה כמו שגנב משתמש בפטיש שלך כדי לפרוץ את הכספת שלך - 
+                        האנטי-וירוס לא יזהה את זה כי הפטיש לגיטימי.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">SIEM</h3>
+                    <span class="glossary-category">כלי אבטחה</span>
+                    <p class="glossary-definition">
+                        <strong>Security Information and Event Management</strong> - מערכת שאוספת לוגים מכל המחשבים 
+                        בארגון, מנתחת אותם ומזהה התנהגות חשודה. Splunk הוא דוגמה ל-SIEM. 
+                        זה כמו <strong>מערכת מצלמות אבטחה</strong> שמקליטה הכל ומתריעה כשרואה משהו מוזר.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Event ID 4688</h3>
+                    <span class="glossary-category">אירוע Windows</span>
+                    <p class="glossary-definition">
+                        אירוע שנרשם ב-Windows Security Log כל פעם שתהליך חדש נוצר. כולל: <strong>מי</strong> הריץ, 
+                        <strong>מתי</strong>, <strong>מה</strong> הפקודה המלאה, ומהו <strong>התהליך האב</strong>. 
+                        זה המקור העיקרי שלנו לזיהוי תקיפות.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Registry Run Keys</h3>
+                    <span class="glossary-category">מנגנון Windows</span>
+                    <p class="glossary-definition">
+                        מפתחות ברישום של Windows (במיקום <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>) 
+                        שקובעים מה ירוץ אוטומטית כשמשתמש נכנס למערכת. התוקפים משתמשים בזה כדי להבטיח ש<strong>התוכנה 
+                        הזדונית שלהם תרוץ בכל אתחול</strong>.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Persistence</h3>
+                    <span class="glossary-category">טקטיקה</span>
+                    <p class="glossary-definition">
+                        <strong>התמדה</strong> - יכולת של התוקף לשמור על גישה למערכת גם אחרי אתחול או ניתוק. 
+                        זה כמו שגנב משאיר לעצמו מפתח רזרבי לבית. Registry Run Keys זו אחת מהדרכים הפופולריות 
+                        ביותר להשגת Persistence.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Lateral Movement</h3>
+                    <span class="glossary-category">טקטיקה</span>
+                    <p class="glossary-definition">
+                        <strong>תנועה צידית</strong> - אחרי שהתוקף נכנס למחשב אחד, הוא משתמש בסיסמאות שגנב 
+                        כדי לעבור למחשבים אחרים ברשת. זה כמו דומינו: פריצה למחשב אחד → גניבת סיסמאות → 
+                        פריצה ל-10 מחשבים נוספים.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">rundll32.exe</h3>
+                    <span class="glossary-category">כלי Windows</span>
+                    <p class="glossary-definition">
+                        כלי לגיטימי של Windows שמריץ פונקציות מתוך קבצי <strong>DLL</strong> (Dynamic Link Library). 
+                        התוקפים משתמשים בו כי הוא יכול להפעיל את <strong>comsvcs.dll</strong> עם הפונקציה 
+                        <strong>MiniDump</strong> כדי לעשות dump של זיכרון התהליכים.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">comsvcs.dll</h3>
+                    <span class="glossary-category">ספרייה</span>
+                    <p class="glossary-definition">
+                        <strong>Component Services DLL</strong> - ספרייה של Microsoft שמכילה פונקציה בשם 
+                        <strong>MiniDump</strong> שיכולה לעשות dump של זיכרון תהליכים. משמשת לגיטימית ל-debugging, 
+                        אבל תוקפים משתמשים בה כדי לגנוב סיסמאות מ-LSASS.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">MiniDump</h3>
+                    <span class="glossary-category">פונקציה</span>
+                    <p class="glossary-definition">
+                        פונקציה ב-comsvcs.dll שיוצרת <strong>"תמונת מצב"</strong> של זיכרון תהליך מסוים ושומרת אותה 
+                        לקובץ. התוקף יכול לנתח את הקובץ הזה אחר כך בשקט במחשב שלו ולחלץ סיסמאות.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">MITRE ATT&CK</h3>
+                    <span class="glossary-category">מסגרת</span>
+                    <p class="glossary-definition">
+                        מאגר ידע עולמי של טכניקות תקיפה שמשתמשים בהן האקרים אמיתיים. כל טכניקה מקבלת קוד ייחודי 
+                        (כמו T1547.001). זה כמו <strong>ספר מתכונים של פשעי סייבר</strong> שעוזר ל-SOC Analysts 
+                        לזהות ולתקשר על תקיפות.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">T1547.001</h3>
+                    <span class="glossary-category">טכניקת MITRE</span>
+                    <p class="glossary-definition">
+                        <strong>Boot or Logon Autostart Execution: Registry Run Keys</strong> - קוד MITRE לטכניקה 
+                        של שינוי Registry Run Keys לצורך Persistence. זה בדיוק מה שעשינו בשלב 1.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">T1003.001</h3>
+                    <span class="glossary-category">טכניקת MITRE</span>
+                    <p class="glossary-definition">
+                        <strong>OS Credential Dumping: LSASS Memory</strong> - קוד MITRE לטכניקה של גניבת אישורים 
+                        מזיכרון LSASS. זה בדיוק מה שעשינו בשלב 2.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">PowerShell</h3>
+                    <span class="glossary-category">כלי Windows</span>
+                    <p class="glossary-definition">
+                        שפת סקריפטים ושורת פקודה מתקדמת של Windows. מאוד חזקה ולכן מאוד פופולרית אצל תוקפים. 
+                        השתמשנו ב-<strong>Set-ItemProperty</strong> כדי לשנות את הרישום.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Set-ItemProperty</h3>
+                    <span class="glossary-category">פקודת PowerShell</span>
+                    <p class="glossary-definition">
+                        פקודה ב-PowerShell שמשנה ערכים ברישום של Windows. בפרויקט שלנו, השתמשנו בה כדי ליצור 
+                        את מפתח ההתמדה <strong>CriticalPDFUpdate</strong>.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">REGEX / rex</h3>
+                    <span class="glossary-category">כלי Splunk</span>
+                    <p class="glossary-definition">
+                        <strong>Regular Expression</strong> - דפוס חיפוש טקסט מתקדם. ב-Splunk, פקודת <strong>rex</strong> 
+                        משתמשת ב-REGEX כדי לחלץ מידע מהטקסט הגולמי. למשל, לחלץ את שם המשתמש או את שורת הפקודה 
+                        מתוך Event 4688.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">EDR</h3>
+                    <span class="glossary-category">פתרון אבטחה</span>
+                    <p class="glossary-definition">
+                        <strong>Endpoint Detection and Response</strong> - תוכנה מתקדמת שמותקנת על כל מחשב ומזהה 
+                        התנהגות חשודה בזמן אמת. Windows Defender for Endpoint זה דוגמה ל-EDR. 
+                        זה הרבה יותר חכם מאנטי-וירוס רגיל.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">MFA</h3>
+                    <span class="glossary-category">בקרת אבטחה</span>
+                    <p class="glossary-definition">
+                        <strong>Multi-Factor Authentication</strong> - אימות דו-שלבי. דורש לא רק סיסמה אלא גם 
+                        <strong>משהו נוסף</strong> (כמו קוד מהטלפון). גם אם התוקף גונב את הסיסמה, הוא לא יכול 
+                        להיכנס בלי הטלפון שלך.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Splunk Universal Forwarder</h3>
+                    <span class="glossary-category">רכיב Splunk</span>
+                    <p class="glossary-definition">
+                        סוכן קל משקל שמותקן על המחשב הנבדק ושולח את הלוגים (Event 4688 וכו') ל-Splunk Enterprise. 
+                        בפרויקט שלנו, היה צריך להגדיר אותו ב-<strong>inputs.conf</strong> כדי שיאסוף Windows Event Logs.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Audit Process Creation</h3>
+                    <span class="glossary-category">הגדרת Windows</span>
+                    <p class="glossary-definition">
+                        הגדרה ב-Group Policy (gpedit.msc) שמפעילה רישום של Event 4688. צריך גם להפעיל 
+                        <strong>"Include command line in process creation events"</strong> כדי שנראה את שורת הפקודה המלאה.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">SOC Analyst</h3>
+                    <span class="glossary-category">תפקיד</span>
+                    <p class="glossary-definition">
+                        <strong>Security Operations Center Analyst</strong> - אנליסט במרכז האבטחה של הארגון. 
+                        תפקידו: לנטר אירועי אבטחה ב-SIEM, לזהות תקיפות, לחקור אותן, ולהפעיל תגובה מהירה.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Incident Response</h3>
+                    <span class="glossary-category">תהליך</span>
+                    <p class="glossary-definition">
+                        <strong>תגובה לאירוע</strong> - התהליך המובנה של טיפול בתקיפת סייבר: זיהוי, בידוד, 
+                        מיגור האיום, שחזור, ולמידת לקחים. בפרויקט שלנו, יצרנו דוח Incident Response מלא.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">IOC</h3>
+                    <span class="glossary-category">מושג פורנזי</span>
+                    <p class="glossary-definition">
+                        <strong>Indicator of Compromise</strong> - סימן שמעיד על תקיפה. יכול להיות: קובץ חשוד, 
+                        ערך רישום, כתובת IP, שם תהליך, או CommandLine מסוימת. בפרויקט שלנו: CriticalPDFUpdate, 
+                        lsass.dmp, ועוד.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">Parent Process</h3>
+                    <span class="glossary-category">מושג Windows</span>
+                    <p class="glossary-definition">
+                        <strong>תהליך אב</strong> - התהליך שיצר תהליך אחר. למשל: cmd.exe יצר את rundll32.exe, 
+                        אז cmd.exe הוא ה-Parent Process. זה חשוב לבניית Timeline ולזיהוי שרשראות חשודות.
+                    </p>
+                </div>
+
+                <div class="glossary-item">
+                    <h3 class="glossary-term">PID</h3>
+                    <span class="glossary-category">מושג Windows</span>
+                    <p class="glossary-definition">
+                        <strong>Process ID</strong> - מספר ייחודי שWindows נותן לכל תהליך. בפרויקט שלנו, 
+                        השתמשנו ב-PID 13980 (notepad.exe) כיעד ה-dump.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section style="background: var(--secondary);">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-number">06</div>
+                <h2 class="section-title">לקחים מרכזיים</h2>
+                <p class="section-subtitle">מה למדנו מהפרויקט הזה?</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">🎯</div>
+                    <h3 class="tech-title">תקיפות משתמשות בכלים לגיטימיים</h3>
+                    <p class="tech-description">
+                        אנטי-וירוס לא יעזור נגד rundll32.exe כי זה קובץ של Microsoft. 
+                        צריך לחפש <strong>התנהגות חשודה</strong>, לא קבצים זדוניים.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">⚡</div>
+                    <h3 class="tech-title">לוגים חייבים להיות מופעלים</h3>
+                    <p class="tech-description">
+                        בלי Audit Process Creation עם CommandLine, לא היינו רואים את הפקודות. 
+                        זה כמו מצלמת אבטחה שמצלמת רק צללים.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🔗</div>
+                    <h3 class="tech-title">חשיבות קורלציות</h3>
+                    <p class="tech-description">
+                        אירוע בודד יכול להיות תמים. שני אירועים ביחד תוך דקות? 
+                        זו <strong>תקיפה מתואמת</strong> שדורשת התראה קריטית.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">📚</div>
+                    <h3 class="tech-title">MITRE ATT&CK = שפה משותפת</h3>
+                    <p class="tech-description">
+                        כשאומרים T1547.001, כל SOC Analyst בעולם יודע על מה מדברים. 
+                        זו השפה המקצועית של אבטחת מידע.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">⏱️</div>
+                    <h3 class="tech-title">מהירות זיהוי קריטית</h3>
+                    <p class="tech-description">
+                        זיהינו את התקיפה תוך פחות מ-5 דקות. בעולם האמיתי, הממוצע הוא 
+                        <strong>200+ ימים</strong>. זה ההבדל בין נזק קטן לאסון.
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🛡️</div>
+                    <h3 class="tech-title">שכבות הגנה</h3>
+                    <p class="tech-description">
+                        MFA חוסם השלכות של גניבת סיסמאות. EDR חוסם ביצוע. SIEM מזהה דפוסים. 
+                        צריך <strong>כמה שכבות</strong> כי אף שכבה לא מושלמת.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="name">Sean Damari</p>
+            <p>SOC Analyst Lab Project - January 2026</p>
+            <p style="color: var(--accent); margin-top: 1rem;">
+                Incident ID: LAB-2026-COMPROMISE-001
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.phase-card, .tech-card, .glossary-item, .timeline-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
